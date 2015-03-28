@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Current>
+    <Item>
+        <City>Kraków, Al. Krasińskiego</City>
+        <Date>2015-03-28 13:00:00</Date>
+        <Value>26,6724</Value>
+        <Pollutant>PM2.5</Pollutant>
+        <Concentration>1h</Concentration>
+    </Item>
+    <Item>
+        <City>Kraków, Al. Krasińskiego</City>
+        <Date>2015-03-28 13:00:00</Date>
+        <Value>38,3014</Value>
+        <Pollutant>PM10</Pollutant>
+        <Concentration>1h</Concentration>
+    </Item>
+    <Item>
+        <City>Kraków, Al. Krasińskiego</City>
+        <Date>2015-03-28 13:00:00</Date>
+        <Value>43,9932</Value>
+        <Pollutant>NO2</Pollutant>
+        <Concentration>1h</Concentration>
+    </Item>
+    <Item>
+        <City>Kraków, Al. Krasińskiego</City>
+        <Date>2015-03-28 13:00:00</Date>
+        <Value>742,4</Value>
+        <Pollutant>CO</Pollutant>
+        <Concentration>1h</Concentration>
+    </Item>
+    <Item>
+        <City>Kraków, Al. Krasińskiego</City>
+        <Date>2015-03-28 12:00:00</Date>
+        <Value>695,2</Value>
+        <Pollutant>CO</Pollutant>
+        <Concentration>1h</Concentration>
+    </Item>
+    <Item>
+        <City>Kraków, Al. Krasińskiego</City>
+        <Date>2015-03-28 12:00:00</Date>
+        <Value>39,1899</Value>
+        <Pollutant>NO2</Pollutant>
+        <Concentration>1h</Concentration>
+    </Item>
+    <Item>
+        <City>Kraków, Al. Krasińskiego</City>
+        <Date>2015-03-28 12:00:00</Date>
+        <Value>28,4958</Value>
+        <Pollutant>PM2.5</Pollutant>
+        <Concentration>1h</Concentration>
+    </Item>
+    <Item>
+        <City>Kraków, Al. Krasińskiego</City>
+        <Date>2015-03-28 12:00:00</Date>
+        <Value>40,9226</Value>
+        <Pollutant>PM10</Pollutant>
+        <Concentration>1h</Concentration>
+    </Item>
+    <Item>
+        <City>Kraków, Al. Krasińskiego</City>
+        <Date>2015-03-28 11:00:00</Date>
+        <Value>30,896</Value>
+        <Pollutant>NO2</Pollutant>
+        <Concentration>1h</Concentration>
+    </Item>
+</Current>
