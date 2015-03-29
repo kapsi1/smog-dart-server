@@ -1,6 +1,6 @@
 part of app;
 
-Map<String, Location> locations = new Map();
+Map<String, Location> _locations = new Map();
 
 class Location {
   String name;
@@ -37,13 +37,18 @@ class Pollutant {
 
   toString() => '<Pollutant>$name';
 
-  toJson() => {
-    'name': name,
-    'values': new Map.fromIterable(values.keys,
-                                   key: (DateTime date) => date.toIso8601String(),
-                                   value: (DateTime date) => values[date]),
-    'lastValue': lastValue
-  };
+  toJson() {
+    var ret = {
+      'name': name,
+      'lastValue': lastValue
+    };
+    if (values.length > 0) {
+      ret['values'] = new Map.fromIterable(values.keys,
+                                           key: (DateTime date) => date.toIso8601String(),
+                                           value: (DateTime date) => values[date]);
+    }
+    return ret;
+  }
 
   bool operator ==(o) => o is Pollutant && name == o.name;
 
@@ -51,22 +56,20 @@ class Pollutant {
 }
 
 Future<Map<String, Location>> loadData() async {
-  await timezone.initializeTimeZone();
-  final timezone.Location warsaw = timezone.getLocation('Europe/Warsaw');
-
   //  var dataUrl = 'http://www.malopolska.pl/_layouts/WrotaMalopolski/XmlData.aspx?data=2';
 //  http_client.get(dataUrl)
 //  .then((http_client.Response res) {
 //    XmlDocument xml = parse(res.body);
 //    print(xml);
 //  });
+  _locations = {};
   var file = new File('data-cest.xml');
   XmlDocument xml = parse(await (file.readAsString(encoding: UTF8)));
 
   xml.findElements('Current').single.findElements('Item').forEach((XmlElement item) {
     var locationName = item.findElements('City').single.text;
-    locations.putIfAbsent(locationName, () => new Location(locationName));
-    var location = locations[locationName];
+    _locations.putIfAbsent(locationName, () => new Location(locationName));
+    var location = _locations[locationName];
 
     var pollutantName = item.findElements('Pollutant').single.text;
     var pollutant = new Pollutant(pollutantName);
@@ -83,8 +86,26 @@ Future<Map<String, Location>> loadData() async {
       pollutant.lastValue = new PollutantValue(date, value);
     }
   });
+  return _locations;
 }
 
-getFullLocations() {
-  locations;
+locationsFull() {
+  return _locations;
+}
+
+locationsOnlyLastValues() {
+  /// Copy _locations so the original isn't changed.
+  Map<String, Location> ret = {};
+  _locations.forEach((name, location) {
+    var l = new Location(name);
+
+    location.pollutants.forEach((pollutant) {
+      var p = new Pollutant(pollutant.name);
+      p.lastValue = pollutant.lastValue;
+      l.pollutants.add(p);
+    });
+
+    ret[name] = l;
+  });
+  return ret;
 }

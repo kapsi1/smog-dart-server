@@ -14,9 +14,18 @@ import 'package:timezone/standalone.dart' as timezone;
 
 part 'data_reader.dart';
 
+timezone.Location warsaw;
+
 main(List<String> args) async {
+  await timezone.initializeTimeZone();
+  warsaw = timezone.getLocation('Europe/Warsaw');
   await loadData();
-  var locations = getFullLocations();
+  var locations = locationsOnlyLastValues();
+  new Timer.periodic(new Duration(seconds: 5), (Timer timer) {
+    loadData().then((_) => locations = locationsOnlyLastValues());
+    print('locations $locations');
+  });
+  print('locations $locations');
   var parser = new ArgParser()
     ..addOption('port', abbr: 'p', defaultsTo: '8080');
 
