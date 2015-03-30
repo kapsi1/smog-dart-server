@@ -53,8 +53,6 @@ class Pollutant {
   int get hashCode => name.hashCode;
 }
 
-var client = new http.Client();
-
 Future<Map<String, Location>> loadData() async {
   print('loadData ' + new DateTime.now().toString());
   Map<String, Location> locations = new Map();
@@ -64,6 +62,7 @@ Future<Map<String, Location>> loadData() async {
     var file = new File('datafull.xml');
     xmlDoc = xml.parse(await (file.readAsString(encoding: UTF8)));
   } else {
+    var client = new http.Client();
     var dataUrl = 'http://www.malopolska.pl/_layouts/WrotaMalopolski/XmlData.aspx?data=2';
     http.Response response = await client.get(dataUrl);
     client.close();

@@ -5,7 +5,6 @@ library app;
 import 'dart:io';
 import 'dart:convert';
 import 'dart:async';
-import 'package:args/args.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_route/shelf_route.dart';
@@ -25,15 +24,13 @@ main(List<String> args) async {
   locations = locationsOnlyLastValues(locations);
   new Timer.periodic(new Duration(minutes: 15), (Timer timer) {
     loadData().then((locations) => locations = locationsOnlyLastValues(locations));
-    print(locations);
   });
-  var parser = new ArgParser()
-    ..addOption('port', abbr: 'p', defaultsTo: '8080');
 
-  var port = int.parse(parser.parse(args)['port'], onError: (val) {
-    stdout.writeln('Could not parse port value "$val" into a number.');
-    exit(1);
-  });
+  int port;
+  if(Platform.environment.containsKey('PORT')) port = int.parse(Platform.environment['PORT']);
+  else port = 8080;
+
+  print(port);
   var headers = {'Content-Type': 'application/json; charset=utf-8'};
   var myRouter = router()
     ..get('/', (r) => new shelf.Response.ok(JSON.encode(locations), headers:headers))
@@ -46,7 +43,7 @@ main(List<String> args) async {
   var handler = const shelf.Pipeline()
   .addMiddleware(shelf.logRequests())
   .addHandler(myRouter.handler);
-  io.serve(handler, 'localhost', port).then((server) {
+  io.serve(handler, '0.0.0.0', port).then((server) {
     print('Serving at http://${server.address.host}:${server.port}');
   });
 }
