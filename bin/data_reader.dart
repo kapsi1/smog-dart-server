@@ -81,8 +81,12 @@ Future<Map<String, Location>> loadData() async {
     } else {
       pollutant = location.pollutants.lookup(pollutant);
     }
-
-    DateTime date = DateTime.parse(item.findElements('Date').single.text + '+0100'); //source dates always in CET timezone
+//    print(item.findElements('Date').single.text);
+//    print(DateTime.parse(item.findElements('Date').single.text.replaceAll(' ', 'T') + '+01').toUtc().toIso8601String());
+//    print(DateTime.parse(item.findElements('Date').single.text.replaceAll(' ', 'T') + '.000+01').toUtc().toIso8601String());
+//    print('');
+    DateTime date = DateTime.parse(item.findElements('Date').single.text.replaceAll(' ', 'T') + '.000+01'); //source dates always in CET timezone
+    //bug? musi być .000
 //    timezone.TZDateTime date = timezone.TZDateTime.parse(warsaw, item.findElements('Date').single.text);
     var value = double.parse(item.findElements('Value').single.text.replaceAll(',', '.'));
     pollutant.values[date] = value;
