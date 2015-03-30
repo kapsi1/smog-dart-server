@@ -1,7 +1,5 @@
 part of app;
 
-Map<String, Location> _locations = new Map();
-
 class Location {
   String name;
 
@@ -55,21 +53,27 @@ class Pollutant {
   int get hashCode => name.hashCode;
 }
 
-Future<Map<String, Location>> loadData() async {
-  //  var dataUrl = 'http://www.malopolska.pl/_layouts/WrotaMalopolski/XmlData.aspx?data=2';
-//  http_client.get(dataUrl)
-//  .then((http_client.Response res) {
-//    XmlDocument xml = parse(res.body);
-//    print(xml);
-//  });
-  _locations = {};
-  var file = new File('data-cest.xml');
-  XmlDocument xml = parse(await (file.readAsString(encoding: UTF8)));
+var client = new http.Client();
 
-  xml.findElements('Current').single.findElements('Item').forEach((XmlElement item) {
+Future<Map<String, Location>> loadData() async {
+  print('loadData ' + new DateTime.now().toString());
+  Map<String, Location> locations = new Map();
+  xml.XmlDocument xmlDoc;
+
+  if (debug) {
+    var file = new File('datafull.xml');
+    xmlDoc = xml.parse(await (file.readAsString(encoding: UTF8)));
+  } else {
+    var dataUrl = 'http://www.malopolska.pl/_layouts/WrotaMalopolski/XmlData.aspx?data=2';
+    http.Response response = await client.get(dataUrl);
+    client.close();
+    response.headers['content-type'] = 'text/xml; charset=utf-8';
+    xmlDoc = xml.parse(response.body);
+  }
+  xmlDoc.findElements('Current').single.findElements('Item').forEach((xml.XmlElement item) {
     var locationName = item.findElements('City').single.text;
-    _locations.putIfAbsent(locationName, () => new Location(locationName));
-    var location = _locations[locationName];
+    locations.putIfAbsent(locationName, () => new Location(locationName));
+    var location = locations[locationName];
 
     var pollutantName = item.findElements('Pollutant').single.text;
     var pollutant = new Pollutant(pollutantName);
@@ -86,17 +90,13 @@ Future<Map<String, Location>> loadData() async {
       pollutant.lastValue = new PollutantValue(date, value);
     }
   });
-  return _locations;
+  return locations;
 }
 
-locationsFull() {
-  return _locations;
-}
-
-locationsOnlyLastValues() {
-  /// Copy _locations so the original isn't changed.
+Map<String, Location> locationsOnlyLastValues(Map<String, Location> locations) {
+  /// Copy locations so the original isn't changed.
   Map<String, Location> ret = {};
-  _locations.forEach((name, location) {
+  locations.forEach((name, location) {
     var l = new Location(name);
 
     location.pollutants.forEach((pollutant) {

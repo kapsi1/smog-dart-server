@@ -9,23 +9,24 @@ import 'package:args/args.dart';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_route/shelf_route.dart';
-import 'package:xml/xml.dart';
+import 'package:xml/xml.dart' as xml;
 import 'package:timezone/standalone.dart' as timezone;
+import 'package:http/http.dart' as http;
 
 part 'data_reader.dart';
 
 timezone.Location warsaw;
+bool debug = false;
 
 main(List<String> args) async {
   await timezone.initializeTimeZone();
   warsaw = timezone.getLocation('Europe/Warsaw');
-  await loadData();
-  var locations = locationsOnlyLastValues();
-  new Timer.periodic(new Duration(seconds: 5), (Timer timer) {
-    loadData().then((_) => locations = locationsOnlyLastValues());
-    print('locations $locations');
+  var locations = await loadData();
+  locations = locationsOnlyLastValues(locations);
+  new Timer.periodic(new Duration(minutes: 15), (Timer timer) {
+    loadData().then((locations) => locations = locationsOnlyLastValues(locations));
+    print(locations);
   });
-  print('locations $locations');
   var parser = new ArgParser()
     ..addOption('port', abbr: 'p', defaultsTo: '8080');
 
