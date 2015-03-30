@@ -54,7 +54,7 @@ class Pollutant {
 }
 
 Future<Map<String, Location>> loadData() async {
-  print('loadData ' + new DateTime.now().toString());
+  print('loadData ' + new DateTime.now().toUtc().toIso8601String());
   Map<String, Location> locations = new Map();
   xml.XmlDocument xmlDoc;
 

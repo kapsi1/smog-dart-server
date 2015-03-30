@@ -9,17 +9,17 @@ import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_route/shelf_route.dart';
 import 'package:xml/xml.dart' as xml;
-import 'package:timezone/standalone.dart' as timezone;
+//import 'package:timezone/standalone.dart' as timezone;
 import 'package:http/http.dart' as http;
 
 part 'data_reader.dart';
 
-timezone.Location warsaw;
+//timezone.Location warsaw;
 bool debug = false;
 
 main(List<String> args) async {
-  await timezone.initializeTimeZone();
-  warsaw = timezone.getLocation('Europe/Warsaw');
+//  await timezone.initializeTimeZone();
+//  warsaw = timezone.getLocation('Europe/Warsaw');
   var locations = await loadData();
   locations = locationsOnlyLastValues(locations);
   new Timer.periodic(new Duration(minutes: 15), (Timer timer) {
