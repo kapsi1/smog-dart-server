@@ -23,7 +23,7 @@ class PollutantValue {
 
   PollutantValue(DateTime this.dateTime, double this.value);
 
-  toJson() => {'dateTime': dateTime.toIso8601String(), 'value': value};
+  toJson() => {'dateTime': dateTime.toUtc().toIso8601String(), 'value': value};
 }
 
 class Pollutant {
@@ -42,7 +42,7 @@ class Pollutant {
     };
     if (values.length > 0) {
       ret['values'] = new Map.fromIterable(values.keys,
-                                           key: (DateTime date) => date.toIso8601String(),
+                                           key: (DateTime date) => date.toUtc().toIso8601String(),
                                            value: (DateTime date) => values[date]);
     }
     return ret;
@@ -82,7 +82,8 @@ Future<Map<String, Location>> loadData() async {
       pollutant = location.pollutants.lookup(pollutant);
     }
 
-    DateTime date = timezone.TZDateTime.parse(warsaw, item.findElements('Date').single.text);
+    DateTime date = DateTime.parse(item.findElements('Date').single.text + '+0100'); //source dates always in CET timezone
+//    timezone.TZDateTime date = timezone.TZDateTime.parse(warsaw, item.findElements('Date').single.text);
     var value = double.parse(item.findElements('Value').single.text.replaceAll(',', '.'));
     pollutant.values[date] = value;
     if (pollutant.lastValue == null || date.isAfter(pollutant.lastValue.dateTime)) {
