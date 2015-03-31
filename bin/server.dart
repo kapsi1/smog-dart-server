@@ -8,18 +8,15 @@ import 'dart:async';
 import 'package:shelf/shelf.dart' as shelf;
 import 'package:shelf/shelf_io.dart' as io;
 import 'package:shelf_route/shelf_route.dart';
+import 'package:shelf_cors/shelf_cors.dart';
 import 'package:xml/xml.dart' as xml;
-//import 'package:timezone/standalone.dart' as timezone;
 import 'package:http/http.dart' as http;
 
 part 'data_reader.dart';
 
-//timezone.Location warsaw;
 bool debug = false;
 
 main(List<String> args) async {
-//  await timezone.initializeTimeZone();
-//  warsaw = timezone.getLocation('Europe/Warsaw');
   var locations = await loadData();
   locations = locationsOnlyLastValues(locations);
   new Timer.periodic(new Duration(minutes: 15), (Timer timer) {
@@ -42,6 +39,7 @@ main(List<String> args) async {
 
   var handler = const shelf.Pipeline()
   .addMiddleware(shelf.logRequests())
+  .addMiddleware(createCorsHeadersMiddleware())
   .addHandler(myRouter.handler);
   io.serve(handler, '0.0.0.0', port).then((server) {
     print('Serving at http://${server.address.host}:${server.port}');
