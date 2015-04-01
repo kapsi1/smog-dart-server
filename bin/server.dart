@@ -27,7 +27,6 @@ main(List<String> args) async {
   if(Platform.environment.containsKey('PORT')) port = int.parse(Platform.environment['PORT']);
   else port = 8080;
 
-  print(port);
   var headers = {'Content-Type': 'application/json; charset=utf-8'};
   var myRouter = router()
     ..get('/', (r) => new shelf.Response.ok(JSON.encode(locations), headers:headers))
@@ -41,7 +40,7 @@ main(List<String> args) async {
   .addMiddleware(shelf.logRequests())
   .addMiddleware(createCorsHeadersMiddleware())
   .addHandler(myRouter.handler);
-  io.serve(handler, '0.0.0.0', port).then((server) {
-    print('Serving at http://${server.address.host}:${server.port}');
-  });
+  HttpServer server = await io.serve(handler, '0.0.0.0', port);
+  server.autoCompress = true;
+  print('Serving at http://${server.address.host}:${server.port}');
 }
