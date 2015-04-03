@@ -15,11 +15,12 @@ import 'package:http/http.dart' as http;
 part 'data_reader.dart';
 
 bool debug = false;
+int refreshPeriodMin = 5;
 
 main(List<String> args) async {
   Map<String, Location> locations = await loadData();
   locations = locationsOnlyLastValues(locations);
-  new Timer.periodic(new Duration(minutes: 15), (Timer timer) {
+  new Timer.periodic(new Duration(minutes: refreshPeriodMin), (Timer timer) {
     loadData().then((Map<String, Location> newLocations) {
       locations = locationsOnlyLastValues(newLocations);
     });
