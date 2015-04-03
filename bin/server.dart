@@ -17,27 +17,29 @@ part 'data_reader.dart';
 bool debug = false;
 
 main(List<String> args) async {
-  var locations = await loadData();
+  Map<String, Location> locations = await loadData();
   locations = locationsOnlyLastValues(locations);
   new Timer.periodic(new Duration(minutes: 15), (Timer timer) {
-    loadData().then((locations) => locations = locationsOnlyLastValues(locations));
+    loadData().then((Map<String, Location> newLocations) {
+      locations = locationsOnlyLastValues(newLocations);
+    });
   });
 
   int port;
-  if(Platform.environment.containsKey('PORT')) port = int.parse(Platform.environment['PORT']);
+  if (Platform.environment.containsKey('PORT')) port = int.parse(Platform.environment['PORT']);
   else port = 8080;
 
   var headers = {'Content-Type': 'application/json; charset=utf-8'};
   var myRouter = router()
     ..get('/', (r) => new shelf.Response.ok(JSON.encode(locations), headers:headers))
     ..get('/{location}', (request) {
-    var location = locations[getPathParameter(request, 'location')];
-    var jsonLocation = JSON.encode(location);
+    Location location = locations[getPathParameter(request, 'location')];
+    String jsonLocation = JSON.encode(location);
     return new shelf.Response.ok(jsonLocation, headers:headers);
   });
 
   var handler = const shelf.Pipeline()
-  .addMiddleware(shelf.logRequests())
+//  .addMiddleware(shelf.logRequests())
   .addMiddleware(createCorsHeadersMiddleware())
   .addHandler(myRouter.handler);
   HttpServer server = await io.serve(handler, '0.0.0.0', port);

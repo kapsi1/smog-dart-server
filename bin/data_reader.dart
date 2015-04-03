@@ -54,7 +54,6 @@ class Pollutant {
 }
 
 Future<Map<String, Location>> loadData() async {
-  print('loadData ' + new DateTime.now().toUtc().toIso8601String());
   Map<String, Location> locations = new Map();
   xml.XmlDocument xmlDoc;
 
@@ -81,19 +80,17 @@ Future<Map<String, Location>> loadData() async {
     } else {
       pollutant = location.pollutants.lookup(pollutant);
     }
-//    print(item.findElements('Date').single.text);
-//    print(DateTime.parse(item.findElements('Date').single.text.replaceAll(' ', 'T') + '+01').toUtc().toIso8601String());
-//    print(DateTime.parse(item.findElements('Date').single.text.replaceAll(' ', 'T') + '.000+01').toUtc().toIso8601String());
-//    print('');
-    DateTime date = DateTime.parse(item.findElements('Date').single.text.replaceAll(' ', 'T') + '.000+01'); //source dates always in CET timezone
+    //source dates always in CET timezone
+    DateTime date = DateTime.parse(item.findElements('Date').single.text.replaceAll(' ', 'T') + '.000+01');
     //bug? musi być .000
-//    timezone.TZDateTime date = timezone.TZDateTime.parse(warsaw, item.findElements('Date').single.text);
     var value = double.parse(item.findElements('Value').single.text.replaceAll(',', '.'));
     pollutant.values[date] = value;
     if (pollutant.lastValue == null || date.isAfter(pollutant.lastValue.dateTime)) {
+//      print('${item.findElements('Date').single.text} ${date.toLocal().toIso8601String()}');
       pollutant.lastValue = new PollutantValue(date, value);
     }
   });
+  print('loadData, locations loaded: ${locations.length}');
   return locations;
 }
 
