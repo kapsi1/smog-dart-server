@@ -47,7 +47,7 @@ main(List<String> args) async {
   .addMiddleware(shelf.logRequests())
   .addMiddleware(createCorsHeadersMiddleware())
   .addHandler(myRouter.handler);
-  HttpServer server = await io.serve(handler, 'localhost', port);
+  HttpServer server = await io.serve(handler, '0.0.0.0', port);
   server.autoCompress = true;
   print('Serving at http://${server.address.host}:${server.port}');
 }
