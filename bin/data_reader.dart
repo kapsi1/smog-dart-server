@@ -86,7 +86,6 @@ Future<Map<String, Location>> loadData() async {
     var value = double.parse(item.findElements('Value').single.text.replaceAll(',', '.'));
     pollutant.values[date] = value;
     if (pollutant.lastValue == null || date.isAfter(pollutant.lastValue.dateTime)) {
-//      print('${item.findElements('Date').single.text} ${date.toLocal().toIso8601String()}');
       pollutant.lastValue = new PollutantValue(date, value);
     }
   });

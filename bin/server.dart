@@ -32,17 +32,22 @@ main(List<String> args) async {
   var headers = {'Content-Type': 'application/json; charset=utf-8'};
   var myRouter = router()
     ..get('/', (r) => new shelf.Response.ok(JSON.encode(locations), headers:headers))
-    ..get('/{location}', (request) {
-    Location location = locations[getPathParameter(request, 'location')];
+    ..get('/locations/', (request) {
+    return new shelf.Response.ok(JSON.encode(new List.from(locations.keys)), headers:headers);
+  })
+    ..get('/location{?val}', (request) {
+    String locName = getPathParameter(request, 'val');
+    Location location = locations[locName];
+    if(location == null) return new shelf.Response.notFound('');
     String jsonLocation = JSON.encode(location);
     return new shelf.Response.ok(jsonLocation, headers:headers);
   });
 
   var handler = const shelf.Pipeline()
-//  .addMiddleware(shelf.logRequests())
+  .addMiddleware(shelf.logRequests())
   .addMiddleware(createCorsHeadersMiddleware())
   .addHandler(myRouter.handler);
-  HttpServer server = await io.serve(handler, '0.0.0.0', port);
+  HttpServer server = await io.serve(handler, 'localhost', port);
   server.autoCompress = true;
   print('Serving at http://${server.address.host}:${server.port}');
 }

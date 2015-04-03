@@ -1,8 +1,6 @@
-name: 'dartshelf'
-version: 0.0.1
-description: A minimal web server using the shelf package.
-#author: <your name> <email@example.com>
-#homepage: https://www.example.com
+name: 'smog-server'
+version: 1.0.0
+description: Backend for smog extension
 environment:
   sdk: '>=1.0.0 <2.0.0'
 dependencies:
