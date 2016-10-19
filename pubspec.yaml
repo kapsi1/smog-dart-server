@@ -1,11 +1,12 @@
-name: 'smog-server'
-version: 1.0.0
+name: smog_server
+version: 2.0.0
 description: Backend for smog extension
 environment:
-  sdk: '>=1.0.0 <2.0.0'
+  sdk: any
 dependencies:
-  shelf: '^0.6.0'
-  shelf_route: "^0.12.0"
-  shelf_cors: ">=0.2.1 <0.3.0"
+  shelf: any
+  shelf_route: any
+  shelf_cors: any
   http: any
-  xml: ">=2.0.0 <3.0.0"
+  xml: any
+  intl: any
